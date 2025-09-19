@@ -1,0 +1,217 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nicholi's ePortfolio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <!-- Navigation Bar -->
+  <nav class="bg-blue-600 text-white p-4 top-0   shadow-md">
+    <div class="container mx-auto flex justify-between  items-center">
+      <h1 class="text-xl font-bold">Nicholi's ePortfolio</h1>
+      <ul class="flex space-x-6">
+        <li><a href="#home" class="hover:underline">Home</a></li>
+        <li><a href="#projects" class="hover:underline">Evidence of Learning</a></li>
+        <li><a href="#goals" class="hover:underline">Future Goals</a></li>
+        <li><a href="about.html" class="hover:underline">About Me</a></li>
+        
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Section One: Introduction/Home -->
+  <section id="home" class="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white">
+    <div class="container mx-auto px-4 text-center" style="padding: 53px">
+      <h2 class="text-4xl font-bold mb-4">Empowering My Future: A Journey of Growth</h2>
+      <p class="text-lg mb-6">A showcase of my transformation through the Empowering for Success in the Workplace Programme</p>
+
+      <!-- Table of Contents -->
+      <div class="bg-white text-gray-800 p-6 rounded-lg shadow-md max-w-2xl mx-auto mb-8">
+        <h3 class="text-2xl font-semibold mb-4">Table of Contents</h3>
+        <ul class="text-left space-y-2">
+          <li><a href="#home" class="text-blue-600 hover:underline">1. Introduction</a></li>
+          <li class="ml-4"><a href="#introduction" class="text-blue-600 hover:underline">1.1 Purpose of the ePortfolio</a></li>
+          <li class="ml-4"><a href="#letter-to-self" class="text-blue-600 hover:underline">1.2 Letter to Self</a></li>
+          <li><a href="#projects" class="text-blue-600 hover:underline">2. Evidence of Learning</a></li>
+          <li class="ml-4"><a href="#smart-goal" class="text-blue-600 hover:underline">2.1 SMART Goal with Action Plan</a></li>
+          <li class="ml-4"><a href="#self-assessment" class="text-blue-600 hover:underline">2.2 Professional Self Assessment</a></li>
+          <li class="ml-4"><a href="#cv" class="text-blue-600 hover:underline">2.3 Curriculum Vitae</a></li>
+          <li class="ml-4"><a href="#career-plan" class="text-blue-600 hover:underline">2.4 Career Planning Report</a></li>
+          <li class="ml-4"><a href="#time-log" class="text-blue-600 hover:underline">2.5 3-Day Time Log and Productivity Reflection</a></li>
+          <li class="ml-4"><a href="#stress-assessment" class="text-blue-600 hover:underline">2.6 Self-Stress Assessment</a></li>
+          <li class="ml-4"><a href="#business-idea" class="text-blue-600 hover:underline">2.7 Business Idea Brief</a></li>
+          <li><a href="#goals" class="text-blue-600 hover:underline">3. Future Goals and Reflections</a></li>
+        </ul>
+      </div>
+
+      <!-- Introduction -->
+      <div id="introduction" class="max-w-3xl mx-auto mb-8">
+        <h3 class="text-2xl font-semibold mb-4">Purpose of the ePortfolio</h3>
+        <p class="text-lg text-gray-200" style="text-align: justify;">
+          This ePortfolio is a testament to my growth through a transformative program focused on life skills, mentorship, and job coaching. It captures my journey of self-discovery, skill development, and career preparation, showcasing artifacts that reflect my learning and aspirations. By documenting my experiences, this portfolio serves as both a reflection of my past achievements and a roadmap for my future, highlighting how I’ve grown as a professional and individual ready to make a meaningful impact.
+        </p>
+      </div>
+
+      <!-- Letter to Self -->
+      <div id="letter-to-self" class="max-w-4xl mx-auto " style="padding: 40px" >
+        <h3 class="text-2xl font-semibold mb-4">Letter to Self</h3>
+        <p class="text-lg text-gray-200" style="text-align: justify;">
+    Dear Nicholi,<br>
+    
+    You are a determined, empathetic, and reflective individual, guided by values of integrity, resilience, and collaboration. This program has been a pivotal chapter in your journey, teaching you life skills like effective communication, time management, and emotional intelligence, while mentorship and job coaching have shaped your professional identity. From learning to navigate workplace dynamics to mastering the art of goal-setting, you’ve grown from a curious learner into a confident professional. Key milestones, like crafting a SMART goal and receiving constructive feedback from mentors, have taught you the power of intentionality and adaptability. You’ve learned to embrace challenges as opportunities, and your commitment to lifelong learning shines through. As you continue, carry this growth forward with courage and purpose, knowing you are capable of achieving your dreams.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Two: Evidence of Learning / Projects -->
+  <section id="projects" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-8">Building My Path: Evidence of learning</h2>
+      <p class="text-lg text-gray-700 text-center mb-8">A collection of artifacts demonstrating my learning and skills
+      acquired</p>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Artifact 1: SMART Goal with Action Plan -->
+        <div id="smart-goal" class="bg-gray-100 p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold mb-2">SMART Goal with Action Plan</h3>
+          <p class="text-gray-600 mb-4"><strong>Description:</strong> A SMART goal to build and deploy a personal portfolio website using WordPress and Elementor, enhanced with custom JavaScript for interactive features, with a detailed action plan outlining steps, resources, and timelines.</p>
+          <p class="text-gray-600 mb-4"><strong>Reflection:</strong> Developing this SMART goal taught me the importance of specificity and measurability in planning. By breaking down a complex objective into actionable steps, I learned to prioritize tasks and allocate resources effectively. This process highlighted my ability to think strategically and reinforced my commitment to continuous learning, particularly in web development, where I aim to build expertise. The action plan’s focus on accountability pushed me to stay disciplined, marking a significant step in my personal and professional growth.</p>
+          <a href="smart-goal.html"class="text-blue-600 hover:underline">View Artifact</a>
+        </div>
+        <!-- Artifact 2: Self Assessment-->
+        <div id="self-assessment" class="bg-gray-100 p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold mb-2">Professional Self Assessment</h3>
+          <p class="text-gray-600 mb-4"><strong>Description:</strong> This professional self-assessment document, developed as part of my personalized mentorship plan preparation, provides an introspective overview of my professional and personal profile.</p>
+          <p class="text-gray-600 mb-4"><strong>Reflection:</strong> Creating this professional self-assessment was a deeply enlightening process that crystallized my professional identity and growth areas. The SWOT analysis forced me to confront my weaknesses, like time management under pressure, while reinforcing my confidence in strengths such as analytical prowess and adaptability. Reflecting on the career strengths summary revealed how my past experiences align with my data science ambitions, yet the identified threats underscored the urgency of continuous learning, especially as I pursue my ongoing data science course. This artifact marks a significant step in my development, as it has equipped me with a clear framework to guide my mentorship, fostering a proactive approach to leveraging support and addressing gaps for a successful career transition.</p>
+          <a href="self-assessment.html" class="text-blue-600 hover:underline">View Artifact</a>
+        </div>
+        <!-- Artifact 3: Curriculum Vitae -->
+        <div id="cv" class="bg-gray-100 p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold mb-2">Curriculum Vitae</h3>
+          <p class="text-gray-600 mb-4"><strong>Description:</strong> A professional CV highlighting my education, skills, and experiences gained throughout my professional endeavors, tailored for job applications in data science and related fields.</p>
+          <p class="text-gray-600 mb-4"><strong>Reflection:</strong>  Creating this CV was a reflective journey that required me to synthesize my skills and experiences into a compelling narrative. The iterative process,feedback from AI tools and online job coaching sessions, taught me to highlight my strengths strategically and tailor my presentation to specific roles. It challenged me to critically assess my strengths and align them with my career goals.I learned the importance of clarity and impact in professional communication, which boosted my confidence in marketing myself. This artifact represents my growth in in presenting myself confidently and strategically in the job market.</p>
+          <a href="cv.html" class="text-blue-600 hover:underline">View Artifact</a>
+        </div>
+        <!-- Artifact 4: Career Planning Report -->
+        <div id="career-plan" class="bg-gray-100 p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold mb-2">Career Planning Report</h3>
+          <p class="text-gray-600 mb-4"><strong>Description:</strong> A report outlining my career goals, target industries, and a two-year roadmap for transitionin to a Data Scientist position</p>
+          <p class="text-gray-600 mb-4"><strong>Reflection:</strong> This report required me to think critically about my long-term aspirations and the practical steps to achieve them. It deepened my understanding of the data science industry and helped me identify gaps in my skills, such as advanced machine learning techniques, which I’m addressing in my current course.Its significance lies in transforming my aspirations into a structured plan. The report has boosted my confidence, fostering a growth mindset by providing a clear timeline, encouraging proactive skill-building, and motivating me to network actively. It equips me with the tools and accountability needed to navigate challenges and achieve a leadership-oriented, data-driven career.
+        </p>
+          <a href="career-plan.html" class="text-blue-600 hover:underline">View Artifact</a>
+        </div>
+        <!-- Artifact 5: 3-Day Time Log and Productivity Reflection -->
+        <div id="time-log" class="bg-gray-100 p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold mb-2">3-Day Time Log and Productivity Reflection</h3>
+          <p class="text-gray-600 mb-4"><strong>Description:</strong> A detailed log of activities over three days, accompanied by a reflection on productivity, time management, and areas for improvement.</p>
+          <p class="text-gray-600 mb-4"><strong>Reflection:</strong> Tracking my time was a revealing exercise that exposed inefficiencies in my daily routine. I discovered that unstructured time led to procrastination, particularly during time that I could have allocated as study sessions. Implementing time-blocking transformed my productivity, allowing me to prioritize high-impact tasks like data science coursework. This artifact reflects my growth in self-discipline and critical self-assessment, teaching me to optimize my schedule to balance professional development and personal well-being. These skills will be crucial as I juggle my ongoing data science studies and career goals.</p>
+          <a href="time-log.html" class="text-blue-600 hover:underline">View Artifact</a>
+        </div>
+        <!-- Artifact 6: Self-Stress Assessment -->
+        <div id="stress-assessment" class="bg-gray-100 p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold mb-2">Self-Stress Assessment</h3>
+          <p class="text-gray-600 mb-4"><strong>Description:</strong> An assessment tool during the program to help me identify potential sources of stress in my workplace and in my personal life.</p>
+          <p class="text-gray-600 mb-4"><strong>Reflection:</strong> Completing the stress assessment tool was an insightful and thought-provoking experience that allowed me to pause and reflect on the various factors influencing my well-being in both my workplace and personal life. The process of engaging with the assessment prompted me to systematically evaluate the sources of stress that I may not have consciously acknowledged before, offering clarity and a structured framework to better understand my current state.The exercise also encouraged me to think proactively about stress management. By identifying potential stressors, I feel better equipped to prioritize self-care strategies, set boundaries, and seek support where needed. It was a reminder that acknowledging stress is not a sign of weakness but a proactive step toward resilience and growth.</p>
+          <a href="stress-assessment.html" class="text-blue-600 hover:underline">View Artifact</a>
+        </div>
+        <!-- Artifact 7: Business Idea Brief -->
+        <div id="business-idea" class="bg-gray-100 p-6 rounded-lg shadow-md">
+          <h3 class="text-xl font-semibold mb-2">Business Idea Brief</h3>
+          <p class="text-gray-600 mb-4"><strong>Description:</strong> A brief proposing a data-driven app to help small businesses optimize their operations through predictive analytics.</p>
+          <p class="text-gray-600 mb-4"><strong>Reflection:</strong> Developing this business idea stretched my creative and analytical skills, requiring me to combine my data science knowledge with practical business applications.as a valuable exercise in problem-solving and strategic thinking. It challenged me to empathize with small business owners, anticipate market dynamics, and craft a solution that is both innovative and practical.It taught me the importance of aligning innovation with market needs and deepened my understanding of entrepreneurship. This artifact reflects my growth in thinking strategically about technology’s impact and has inspired me to explore entrepreneurial opportunities in my future career.
+          </p>
+          <a href="business-idea.html" class="text-blue-600 hover:underline">View Artifact</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Three: Future Goals and Reflections -->
+  <section id="goals" class="py-16 bg-gray-200">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-8">Shaping a Purposeful Future</h2>
+      <p class="text-lg text-gray-700 mb-8">Envisioning a career and life driven by impact and continuous growth</p>
+      <div class="max-w-4xl mx-auto text-left">
+        <p class="text-lg text-gray-700 mb-6" style="text-align: justify;">
+          The life skills, mentorship, and job coaching program has been a transformative experience, equipping me with the tools to navigate my personal and professional journey with confidence. My primary goal is to become a data scientist within two years, leveraging my ongoing data science course to master skills like machine learning, statistical analysis, and data visualization. I also aspire to mentor others, giving back the guidance I’ve received, and to explore entrepreneurial ventures, such as developing data-driven solutions for small businesses. The program’s emphasis on resilience and strategic planning has shaped my approach to challenges, and my current data science studies are building on this foundation by deepening my technical expertise. Moving forward, I aim to improve my leadership skills and expand my network in the tech industry to stay at the forefront of innovation. I recognize that time management and stress management are areas for ongoing improvement, and I’m committed to refining these skills to sustain my growth. With a clear vision and a commitment to lifelong learning, I’m excited to make a meaningful impact in data science and beyond.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-blue-600 text-white p-6">
+    <div class="container mx-auto flex flex-col md:flex-row justify-between items-start">
+      <!-- Contact Information (Left) -->
+      <div class="mb-4 md:mb-0">
+        <a href="https://www.linkedin.com/in/nicholi-john" target="_blank" class="text-white hover:text-gray-300 mb-2 block">
+          <i class="fab fa-linkedin fa-2x"></i>
+        </a>
+        <span class="block">Email: <a href="mailto:nicholijohn@outlook.com" class="hover:underline">nicholijohn@outlook.com</a></span>
+      </div>
+      <!-- Navigation Links (Right, Tabular Layout) -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        <div><a href="index.html" class="hover:underline">Home</a></div>
+        <div><a href="#projects" class="hover:underline">Artifacts</a></div>
+        <div><a href="#goals" class="hover:underline">Reflect</a></div>
+        <div><a href="about.html" class="hover:underline">About Me</a></div>
+      </div>
+    </div>
+    <p class="mt-4 text-center">&copy; Nicholi John 2025  ePortfolio.</p>
+  </footer>
+
+  <script>
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>

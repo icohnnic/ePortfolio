@@ -1,0 +1,144 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Me</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const toggles = document.querySelectorAll('.toggle-btn');
+      toggles.forEach(toggle => {
+        toggle.addEventListener('click', () => {
+          const content = toggle.nextElementSibling;
+          const isOpen = content.style.display === 'block';
+          content.style.display = isOpen ? 'none' : 'block';
+          toggle.textContent = isOpen ? 'Show More' : 'Show Less';
+        });
+      });
+    });
+  </script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <nav class="bg-blue-600 text-white p-4 sticky top-0 shadow-md">
+    <div class="container mx-auto">
+      <a href="index.html" class="text-xl font-bold hover:underline">Back to Portfolio</a>
+    </div>
+  </nav>
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4 max-w-4xl">
+      <div class="flex flex-col md:flex-row items-center md:items-start gap-8">
+        <!-- Profile Picture -->
+        <div class="w-48 h-48 rounded-full overflow-hidden bg-gray-300 flex-shrink-0">
+          <img src="headshot.jpeg" alt="Nicholi John Profile Picture" class="w-full h-full object-cover">
+        </div>
+        <!-- Profile Info -->
+        <div class="flex-1">
+          <h1 class="text-3xl font-bold text-gray-900">Nicholi John</h1>
+          <p class="text-lg text-gray-600 mt-2">St. Kitts and Nevis</p>
+          <div class="mt-4">
+            <h2 class="text-xl font-semibold text-gray-800">Short Bio</h2>
+            <p class="text-gray-700 mt-2">
+            Currently serving as a Business Analyst at the Eastern Caribbean Central Bank, where I bridge the gap between complex processes,  data analysis and strategic decision-making to enhance operational efficiency across the organization . Holding a BSc in Computer Science and Accounting and a Master’s degree in Risk Management and Financial Engineering, I bring both analytical rigor and technical insight to solving complex challenges.
+            </p>
+            <h2 class="text-xl font-semibold text-gray-800 mt-4">Contact Information</h2>
+            <p class="text-gray-700 mt-2">
+              Email: nicholijohn@outlook.com<br>
+              LinkedIn: https://www.linkedin.com/in/nicholi-john/<br>
+              Please contact me via email for further details.
+            </p>
+            <button class="toggle-btn mt-2 px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition duration-300" type="button">Show More</button>
+            <ul class="list-disc list-inside text-gray-700 mt-2 space-y-1" style="display: none;">
+                <h2 class="text-xl font-semibold text-gray-800 mt-4">Previous Work Experience</h2>
+                <li class="text-gray-700 mt-2">Junior Analyst, Central Bank Digital Currency Unit - DCash, St. Kitts and Nevis (Aug 2024 - Dec 2024)</li>
+              <li>Research and Analysis Intern, United Nations Economic Commission for Africa, Ethiopia (Jul 2024 - Sep 2024)</li>
+              <li>Procurement Analyst (Intern), Caribbean Development Bank, Barbados (Jul 2023 - Aug 2023)</li>
+              <li>Audit and IT Intern, BDO Eastern Caribbean, St. Vincent and the Grenadines (May 2022 - August 2022)</li>
+              
+              <h2 class="text-xl font-semibold text-gray-800 mt-4"> Education</h2>
+              <li class="text-gray-700 mt-2"> Master of Science in Risk Management and Financial Engineering, Imperial College Business School, London, UK (Sep 2023 - Sep 2024)</li>
+                <li>Bachelor of Science in Accounting and Computer Science (Double Major), University of the West Indies, Cave Hill, Barbados (Sep 2020 - Jul 2023)</li>
+                <h2 class="text-xl font-semibold text-gray-800 mt-4">Certifications</h2>
+                <li class="text-gray-700 mt-2">Microsoft Business Analyst Professional</li>
+                
+                  <li>Level 4 Applied Finance</li>
+                  <li>Level 4 Investment Bank - Sales & Trading</li>
+                  <h2 class="text-xl font-semibold text-gray-800 mt-4">Skills</h2>
+                  <li class="text-gray-700 mt-2">Data Analytics: Power BI</li>
+                 
+                    <li>Programming: C++, Java, Microsoft Office Suite</li>
+                    <li>Project Management: Process Modeling, Requirements Gathering</li>
+                </ul>
+               
+        
+              </ul>
+              
+              
+            </ul>
+            
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- Footer -->
+  <footer class="bg-blue-600 text-white p-6">
+    <div class="container mx-auto flex flex-col md:flex-row justify-between items-start">
+      <!-- Contact Information (Left) -->
+      <div class="mb-4 md:mb-0">
+        <a href="https://www.linkedin.com/in/nicholi-john/" target="_blank" class="text-white hover:text-gray-300 mb-2 block">
+          <i class="fab fa-linkedin fa-2x"></i>
+        </a>
+        <span class="block">Email: <a href="mailto:nicholijohn@outlook.com" class="hover:underline">nicholijohn@outlook.com</a></span>
+      </div>
+      <!-- Navigation Links (Right, Tabular Layout) -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        <div><a href="index.html" class="hover:underline">Home</a></div>
+        <div><a href="about.html" class="hover:underline">About Me</a></div>
+      </div>
+    </div>
+    <p class="mt-4 text-center">&copy; Nicholi John 2025  ePortfolio.</p>
+  </footer>
+</body>
+</html>

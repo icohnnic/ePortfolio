@@ -1,0 +1,90 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>3-Day Time Log and Productivity Reflection</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <nav class="bg-blue-600 text-white p-4 sticky top-0 shadow-md">
+    <div class="container mx-auto">
+      <a href="index.html" class="text-xl font-bold hover:underline">Back to Portfolio</a>
+    </div>
+  </nav>
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <h1 class="text-3xl font-bold text-center mb-8">3-Day Time Log and Productivity Reflection</h1>
+      <div class="max-w-3xl mx-auto">
+        <h2 class="text-2xl font-semibold mb-4">Description</h2>
+        <p class="text-lg text-gray-700 mb-6">
+        A detailed log of activities over three days, accompanied by a reflection on productivity, time management, and areas for improvement.View the document below: <br><br>
+          <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vQk-0xj-8a0DsCohOqSW7JC1ty1xMBydn1gbYjMisSVjC8wZ6mHxR-khkyP3I-Z3qVu8U96Rzwd9y2v/pubhtml?gid=2001825767&single=true" width="100%" height="600" style="border: none;" title="Time Log and Productivity Reflection"></iframe>
+          <p class="mt-4">If the Excel Sheet does not load, you can <a href="https://docs.google.com/spreadsheets/d/e/2PACX-1vQk-0xj-8a0DsCohOqSW7JC1ty1xMBydn1gbYjMisSVjC8wZ6mHxR-khkyP3I-Z3qVu8U96Rzwd9y2v/pubhtml?gid=2001825767&single=true" class="text-blue-600 hover:underline" download>download it here</a>.</p>
+        </p>
+        <h2 class="text-2xl font-semibold mb-4">Reflection</h2>
+        <p class="text-lg text-gray-700 mb-6">
+        Tracking my time was a revealing exercise that exposed inefficiencies in my daily routine. I discovered that unstructured time led to procrastination, particularly during time that I could have allocated as study sessions. Implementing time-blocking transformed my productivity, allowing me to prioritize high-impact tasks like data science coursework. This artifact reflects my growth in self-discipline and critical self-assessment, teaching me to optimize my schedule to balance professional development and personal well-being. These skills will be crucial as I juggle my ongoing data science studies and career goals.
+        </p>
+      </div>
+    </div>
+  </section>
+</body>
+<footer class="bg-blue-600 text-white p-6">
+  <div class="container mx-auto flex flex-col md:flex-row justify-between items-start">
+    <!-- Contact Information (Left) -->
+    <div class="mb-4 md:mb-0">
+      <a href="https://www.linkedin.com/in/nicholi-john/" target="_blank" class="text-white hover:text-gray-300 mb-2 block">
+        <i class="fab fa-linkedin fa-2x"></i>
+      </a>
+      <span class="block">Email: <a href="mailto:nicholijohn@outlook.com" class="hover:underline">nicholijohn@outlook.com</a></span>
+    </div>
+    <!-- Navigation Links (Right, Tabular Layout) -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+      <div><a href="index.html" class="hover:underline">Home</a></div>
+      <div><a href="about.html" class="hover:underline">About Me</a></div>
+    </div>
+  </div>
+  <p class="mt-4 text-center">&copy; Nicholi John 2025  ePortfolio.</p>
+</footer>
+</html>
